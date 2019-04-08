@@ -3,9 +3,17 @@ import { TimePicker } from "antd";
 import "antd/dist/antd.css";
 import moment from "moment";
 import SimpleReactValidator from "simple-react-validator";
-import MapComponent from "./Map";
+import { connect } from "react-redux";
+import {
+  setDaysAction,
+  setLocationAction,
+  setStartDateAction,
+  setTimeAction,
+  updateCategoriesAction
+} from "../redux/actions";
+import { SearchMapComponent } from "./SearchMap";
 
-class PreferencesComponent extends Component {
+class PreferencesFormComponent extends Component {
   constructor(props) {
     super(props);
     this.validator = new SimpleReactValidator({
@@ -17,20 +25,6 @@ class PreferencesComponent extends Component {
     });
     this.myRef = React.createRef();
   }
-
-  state = {
-    categories: [],
-    totalDays: null,
-    startDate: null,
-    travelSchedule: {
-      start: "0900",
-      end: "1800"
-    },
-    lunchTime: {
-      start: "1300",
-      end: "1400"
-    }
-  };
 
   render() {
     const preferences_options = [
@@ -63,12 +57,12 @@ class PreferencesComponent extends Component {
                 className="form-control"
                 id="totalDays"
                 min={1}
-                value={this.state.totalDays}
+                value={this.props.request.totalDays}
                 onChange={this.handleDays}
               />
               {this.validator.message(
                 "totalDays",
-                this.state.totalDays,
+                this.props.request.totalDays,
                 "required"
               )}
             </div>
@@ -84,14 +78,14 @@ class PreferencesComponent extends Component {
                 type="date"
                 className="form-control"
                 id="startDate"
-                onChange={this.handleStartDate}
+                onChange={ev => this.props.setStartDate(ev.target.value)}
                 min={moment()
                   .add(1, "d")
                   .format("YYYY-MM-DD")}
               />
               {this.validator.message(
                 "startDate",
-                this.state.startDate,
+                this.props.request.startDate,
                 "required"
               )}
             </div>
@@ -105,7 +99,7 @@ class PreferencesComponent extends Component {
             end="18:00"
             onTimeChange={this.onTimeChange}
             validator={this.validator}
-            wtf={this.state.travelSchedule}
+            wtf={this.props.request.travelSchedule}
           />
 
           <Schedule
@@ -115,13 +109,13 @@ class PreferencesComponent extends Component {
             end="14:00"
             onTimeChange={this.onTimeChange}
             validator={this.validator}
-            wtf={this.state.lunchTime}
+            wtf={this.props.request.lunchTime}
           />
 
           <h5>Selecciona los sitios que te gustaría visitar:</h5>
           {this.validator.message(
             "categories",
-            this.state.categories,
+            this.props.request.categories,
             "size:1"
           )}
           <div className="row">
@@ -151,6 +145,13 @@ class PreferencesComponent extends Component {
             </div>
             <div className="col-1" />
           </div>
+          <h5>Selecciona tu lugar de hospedaje</h5>
+          {this.validator.message(
+            "location",
+            this.props.request.location,
+            "required"
+          )}
+          <SearchMapComponent setLocation={this.props.setLocation} />
           <button
             type="submit"
             className="btn btn-primary btn-block"
@@ -158,6 +159,8 @@ class PreferencesComponent extends Component {
           >
             Siguiente
           </button>
+          <br />
+          <br />
         </form>
       </div>
     );
@@ -165,7 +168,7 @@ class PreferencesComponent extends Component {
   submit = e => {
     e.preventDefault();
     if (this.validator.allValid()) {
-      alert("You submitted the form and stuff!");
+      console.log(this.props.request);
     } else {
       this.validator.showMessages();
       this.myRef.current.disabled = false;
@@ -177,38 +180,25 @@ class PreferencesComponent extends Component {
     const { checked, value } = e.target;
 
     if (checked) {
-      this.setState(prevState => ({
-        categories: [...prevState.categories, value]
-      }));
+      this.props.updateCategories([...this.props.request.categories, value]);
     } else {
-      this.setState(prevState => ({
-        categories: prevState.categories.filter(v => v !== value)
-      }));
+      this.props.updateCategories(
+        this.props.request.categories.filter(v => v !== value)
+      );
     }
   };
 
   handleDays = e => {
     const new_number = Number(e.target.value);
-
-    this.setState({
-      totalDays: new_number > 0 ? new_number : 1
-    });
+    this.props.setDays(new_number > 0 ? new_number : 1);
   };
 
-  handleStartDate = e => {
-    this.setState({
-      startDate: e.target.value
-    });
-  };
-
-  onTimeChange = (ev, scheduleType, time) => {
-    this.setState(prevState => ({
-      [`${scheduleType}`]: {
-        ...prevState[`${scheduleType}`],
-        [`${time}`]: ev === null ? ev : ev.format("HHmm")
-      }
-    }));
-  };
+  onTimeChange = (ev, scheduleType, time) =>
+    this.props.setTime(
+      scheduleType,
+      time,
+      ev === null ? ev : ev.format("HHmm")
+    );
 }
 
 const Schedule = ({
@@ -280,4 +270,20 @@ const LabelTimePicker = ({
   </>
 );
 
-export default PreferencesComponent;
+const mapStateToProps = state => ({
+  request: { ...state }
+});
+
+const mapDispatchToProps = dispatch => ({
+  setDays: days => dispatch(setDaysAction(days)),
+  setStartDate: date => dispatch(setStartDateAction(date)),
+  updateCategories: categories => dispatch(updateCategoriesAction(categories)),
+  setTime: (type, time, newTime) =>
+    dispatch(setTimeAction(type, time, newTime)),
+  setLocation: location => dispatch(setLocationAction(location))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PreferencesFormComponent);

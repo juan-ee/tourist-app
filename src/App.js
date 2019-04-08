@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 // import { BrowserRouter, Route, Switch } from "react-router-dom";
 // import Preferences from "./components/Preferences";
-import MapComponent from "./components/Map";
+// import { MapWithASearchBox } from "./components/Map";
+import PreferencesComponent from "./components/Preferences";
 // import Details from "./components/Details";
 
 class App extends Component {
   render() {
-    return <MapComponent />;
+    return <PreferencesComponent />;
 
-    // return <Preferences />;
     //
     // return (
     //   <BrowserRouter>
