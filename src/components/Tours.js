@@ -17,7 +17,7 @@ class ToursComponent extends Component {
       this.setState({ loading: true });
 
       axios
-        .post("/test", this.props.request)
+        .post("/ttdp", this.props.request)
         .then(response => {
           this.setState({ loading: false });
           this.props.setFetchedData(response.data);
@@ -90,7 +90,6 @@ class ToursComponent extends Component {
   }
 
   handleSelected = ev => {
-    console.log(ev.target.value);
     this.setState({ selected: Number(ev.target.value) });
   };
 }
