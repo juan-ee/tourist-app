@@ -12,13 +12,13 @@ import {
   updateCategoriesAction
 } from "../redux/actions";
 import { SearchMapComponent } from "./SearchMap";
-import {withRouter} from "react-router-dom"
+import { withRouter } from "react-router-dom";
 
 class PreferencesFormComponent extends Component {
   constructor(props) {
     super(props);
     this.validator = new SimpleReactValidator({
-      element: message => <div style={{ color: "red" }}>{message}</div>,
+      element: message => <div style={{ color: "red" }}><strong>{message}</strong></div>,
       messages: {
         required: "Campo obligatorio",
         min: "Debes seleccionar al menos 1 categoría"
@@ -43,123 +43,140 @@ class PreferencesFormComponent extends Component {
     ];
 
     return (
-      <div className="container ">
-        <form className="form-horizontal center_form" onSubmit={this.handleSubmit}>
-          <h1> Preferencias Turísticas</h1>
-
-          <div className="form-group row">
-            <label htmlFor="totalDays" className="col-sm-4 col-form-label">
-              <h5>Días de recorrido</h5>
-            </label>
-            <div className="col-sm-2">
-              <input
-                type="number"
-                className="form-control"
-                id="totalDays"
-                min={1}
-                value={this.props.request.totalDays}
-                onChange={this.handleDays}
-              />
-              {this.validator.message(
-                "totalDays",
-                this.props.request.totalDays,
-                "required"
-              )}
+      <div className="container center_form">
+        <form
+          className="card form-horizontal rounded-lg"
+          onSubmit={this.handleSubmit}
+          style={{ backgroundColor: "#FDFCF9" }}
+        >
+          <h1 className="card-title text-center">
+            Tourist Trip Design Problem
+          </h1>
+          <div className="card-body">
+            <div className="form-group row">
+              <label
+                htmlFor="totalDays"
+                className="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-form-label"
+              >
+                <h5>Días de recorrido</h5>
+              </label>
+              <div className="col-xl-3 col-lg-3 col-md-4 col-sm-6">
+                <input
+                  type="number"
+                  className="form-control"
+                  id="totalDays"
+                  min={1}
+                  value={this.props.request.totalDays}
+                  onChange={this.handleDays}
+                />
+                {this.validator.message(
+                  "totalDays",
+                  this.props.request.totalDays,
+                  "required"
+                )}
+              </div>
             </div>
-            <div className="col-sm-6" />
-          </div>
 
-          <div className="form-group row">
-            <label htmlFor="startDate" className="col-sm-4 col-form-label">
-              <h5>Fecha de inicio</h5>
-            </label>
-            <div className="col-sm-4">
-              <input
-                type="date"
-                className="form-control"
-                id="startDate"
-                onChange={ev => this.props.setStartDate(ev.target.value)}
-                min={moment()
-                  .add(1, "d")
-                  .format("YYYY-MM-DD")}
-              />
-              {this.validator.message(
-                "startDate",
-                this.props.request.startDate,
-                "required"
-              )}
+            <div className="form-group row">
+              <label
+                htmlFor="startDate"
+                className="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-form-label"
+              >
+                <h5>Fecha de inicio</h5>
+              </label>
+              <div className="col-xl-3 col-lg-3 col-md-4 col-sm-6">
+                <input
+                  type="date"
+                  className="form-control"
+                  id="startDate"
+                  onChange={ev => this.props.setStartDate(ev.target.value)}
+                  min={moment()
+                    .add(1, "d")
+                    .format("YYYY-MM-DD")}
+                />
+                {this.validator.message(
+                  "startDate",
+                  this.props.request.startDate,
+                  "required"
+                )}
+              </div>
+              {/*<div className="col-sm-4" />*/}
             </div>
-            <div className="col-sm-4" />
-          </div>
 
-          <Schedule
-            title="Horario deseado de los tours"
-            scheduleType="travelSchedule"
-            start="09:00"
-            end="18:00"
-            onTimeChange={this.onTimeChange}
-            validator={this.validator}
-            wtf={this.props.request.travelSchedule}
-          />
+            <Schedule
+              title="Horario deseado para los tours"
+              scheduleType="travelSchedule"
+              start="09:00"
+              end="18:00"
+              onTimeChange={this.onTimeChange}
+              validator={this.validator}
+              wtf={this.props.request.travelSchedule}
+            />
 
-          <Schedule
-            title="Hora deseada de almuerzo"
-            scheduleType="lunchTime"
-            start="13:00"
-            end="14:00"
-            onTimeChange={this.onTimeChange}
-            validator={this.validator}
-            wtf={this.props.request.lunchTime}
-          />
+            <Schedule
+              title="Hora deseada de almuerzo"
+              scheduleType="lunchTime"
+              start="13:00"
+              end="14:00"
+              onTimeChange={this.onTimeChange}
+              validator={this.validator}
+              wtf={this.props.request.lunchTime}
+            />
 
-          <h5>Selecciona los sitios que te gustaría visitar:</h5>
-          {this.validator.message(
-            "categories",
-            this.props.request.categories,
-            "min:1"
-          )}
-          <div className="row">
-            <div className="col-1" />
-            <div className="row col-10">
-              {preferences_options.map((option, index) => (
-                <div
-                  key={`wtf${index}`}
-                  className="col-4 custom-control custom-checkbox"
-                >
-                  <input
-                    id={`check${index}`}
-                    type="checkbox"
-                    className="custom-control-input"
-                    value={option.value}
-                    onChange={this.handleSelectCategory}
-                  />
-                  <label
-                    htmlFor={`check${index}`}
-                    className="custom-control-label"
-                    style={{ cursor: "pointer" }}
+            <h5>Sitios que te gustaría visitar:</h5>
+            {this.validator.message(
+              "categories",
+              this.props.request.categories,
+              "min:1"
+            )}
+            <div className="row">
+              <div className="col-1" />
+              <div className="row col-10">
+                {preferences_options.map((option, index) => (
+                  <div
+                    key={`wtf${index}`}
+                    className="col-4 custom-control custom-checkbox"
                   >
-                    {option.text}
-                  </label>
-                </div>
-              ))}
+                    <input
+                      id={`check${index}`}
+                      type="checkbox"
+                      className="custom-control-input"
+                      value={option.value}
+                      onChange={this.handleSelectCategory}
+                    />
+                    <label
+                      htmlFor={`check${index}`}
+                      className="custom-control-label"
+                      style={{ cursor: "pointer" }}
+                    >
+                      {option.text}
+                    </label>
+                  </div>
+                ))}
+              </div>
+              <div className="col-1" />
             </div>
-            <div className="col-1" />
+            <h5>Lugar de hospedaje</h5>
+            {this.validator.message(
+              "location",
+              this.props.request.location,
+              "required"
+            )}
+            <SearchMapComponent setLocation={this.props.setLocation} />
+
+            <div className="row">
+              <div className="col-1" />
+              <div className="col-10">
+                <button
+                  type="submit"
+                  className="btn btn-pill btn-success btn-lg btn-block"
+                >
+                  Generar itinerarios
+                </button>
+              </div>
+              <div className="col-1" />
+            </div>
           </div>
-          <h5>Selecciona tu lugar de hospedaje</h5>
-          {this.validator.message(
-            "location",
-            this.props.request.location,
-            "required"
-          )}
-          <SearchMapComponent setLocation={this.props.setLocation} />
-          <button
-            type="submit"
-            className="btn btn-primary btn-block"
-          >
-            Siguiente
-          </button>
-          <br />
-          <br />
         </form>
       </div>
     );
@@ -167,7 +184,7 @@ class PreferencesFormComponent extends Component {
   handleSubmit = e => {
     e.preventDefault();
     if (this.validator.allValid()) {
-      this.props.history.push('/tours');
+      this.props.history.push("/tours");
     } else {
       this.validator.showMessages();
       this.forceUpdate();
@@ -208,12 +225,12 @@ const Schedule = ({
   wtf,
   validator
 }) => (
-  <>
+  <div className="form-group">
     <h5>{title}</h5>
     <div className="form-inline">
       <div className="col-1" />
       <LabelTimePicker
-        className="col-12 col-lg-4 col-md-4"
+        className="col-lg-4 col-md-4 col-sm-12"
         labelText="Inicio"
         defaultTime={start}
         onTimeChange={onTimeChange}
@@ -222,9 +239,9 @@ const Schedule = ({
         validator={validator}
         wtf={wtf}
       />
-      <div className="col-1" />
+      <div className="col-2" />
       <LabelTimePicker
-        className="col-12 col-lg-4 col-md-4"
+        className="col-lg-4 col-md-4 col-sm-12"
         labelText="Fin"
         defaultTime={end}
         onTimeChange={onTimeChange}
@@ -235,7 +252,7 @@ const Schedule = ({
       />
       <div className="col-1" />
     </div>
-  </>
+  </div>
 );
 
 const LabelTimePicker = ({
@@ -248,7 +265,7 @@ const LabelTimePicker = ({
   wtf
 }) => (
   <>
-    <div className="form-group mb-2">
+    <div className="form-group row">
       <label
         htmlFor="travelStart"
         className="col-form-label"
@@ -269,7 +286,7 @@ const LabelTimePicker = ({
 );
 
 const mapStateToProps = state => ({
-  request:{...state}
+  request: { ...state }
 });
 
 const mapDispatchToProps = dispatch => ({
