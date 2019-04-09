@@ -12,6 +12,7 @@ import {
   updateCategoriesAction
 } from "../redux/actions";
 import { SearchMapComponent } from "./SearchMap";
+import {withRouter} from "react-router-dom"
 
 class PreferencesFormComponent extends Component {
   constructor(props) {
@@ -20,10 +21,9 @@ class PreferencesFormComponent extends Component {
       element: message => <div style={{ color: "red" }}>{message}</div>,
       messages: {
         required: "Campo obligatorio",
-        size: "Debes seleccionar al menos 1 categoría"
+        min: "Debes seleccionar al menos 1 categoría"
       }
     });
-    this.myRef = React.createRef();
   }
 
   render() {
@@ -44,7 +44,7 @@ class PreferencesFormComponent extends Component {
 
     return (
       <div className="container ">
-        <form className="form-horizontal center_form" onSubmit={this.submit}>
+        <form className="form-horizontal center_form" onSubmit={this.handleSubmit}>
           <h1> Preferencias Turísticas</h1>
 
           <div className="form-group row">
@@ -116,7 +116,7 @@ class PreferencesFormComponent extends Component {
           {this.validator.message(
             "categories",
             this.props.request.categories,
-            "size:1"
+            "min:1"
           )}
           <div className="row">
             <div className="col-1" />
@@ -155,7 +155,6 @@ class PreferencesFormComponent extends Component {
           <button
             type="submit"
             className="btn btn-primary btn-block"
-            ref={this.myRef}
           >
             Siguiente
           </button>
@@ -165,13 +164,12 @@ class PreferencesFormComponent extends Component {
       </div>
     );
   }
-  submit = e => {
+  handleSubmit = e => {
     e.preventDefault();
     if (this.validator.allValid()) {
-      console.log(this.props.request);
+      this.props.history.push('/tours');
     } else {
       this.validator.showMessages();
-      this.myRef.current.disabled = false;
       this.forceUpdate();
     }
   };
@@ -271,7 +269,7 @@ const LabelTimePicker = ({
 );
 
 const mapStateToProps = state => ({
-  request: { ...state }
+  request:{...state}
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -286,4 +284,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PreferencesFormComponent);
+)(withRouter(PreferencesFormComponent));

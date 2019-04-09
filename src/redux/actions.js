@@ -36,3 +36,10 @@ export const setLocationAction = location => ({
     location
   }
 });
+
+export const setFetchedDataAction = data => ({
+  type: Actions.SET_FETCHED_DATA,
+  payload: {
+    data
+  }
+});

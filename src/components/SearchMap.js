@@ -26,8 +26,8 @@ export const SearchMapComponent = compose(
 
       this.setState({
         center: {
-          lat: 41.9,
-          lng: -87.624
+          lat: -0.210689,
+          lng: -78.489132
         },
         markers: [],
         onMapMounted: ref => {

@@ -12,7 +12,8 @@ const initialState = {
     start: "1300",
     end: "1400"
   },
-  categories: []
+  categories: [],
+  fetchedData: []
 };
 
 export const rootReducer = (state = initialState, action) => {
@@ -55,6 +56,12 @@ export const rootReducer = (state = initialState, action) => {
         location: action.payload.location
       };
     }
+
+    case Actions.SET_FETCHED_DATA:
+      return {
+        ...state,
+        fetchedData: action.payload.data
+      };
 
     default:
       return state;
